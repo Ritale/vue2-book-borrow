@@ -1,9 +1,7 @@
 <template>
   <main class="main-container">
       <div class='list'>
-          <ListItem />
-          <ListItem />
-          <ListItem />
+          <ListItem v-for="book in books" :key="book.id" :book="book" @click="toDetail(book)" />
       </div>
   </main>
 </template>
@@ -13,7 +11,17 @@ import ListItem from '../../components/ListItem';
 
 export default {
     name: 'BookList',
-    components: {ListItem}
+    components: {ListItem},
+    data() {
+        return {
+            books: JSON.parse(localStorage.getItem('books')) || []
+        }
+    },
+    // computed: {
+    //     books() {
+    //         return this.$store.state.books;
+    //     }
+    // }
 }
 </script>
 

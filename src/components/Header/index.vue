@@ -3,9 +3,9 @@
       <div class="header-container">
             <router-link to="/books">图书借阅登记</router-link>
             <ul class="nav-list">
-                <li class="nav-item"><input /></li>
+                <!-- <li class="nav-item"><input /></li> -->
                 <li class="nav-item">
-                    <button @click='toEditPage'>新增图书</button>
+                    <el-button @click='toEditPage' size="small">新增图书</el-button>
                 </li>
             </ul>
       </div>
@@ -35,6 +35,7 @@ export default {
         height: 40px;
         color: #909090;
         background: #fff;
+        z-index: 1000;
 
         .header-container {
             display: flex;

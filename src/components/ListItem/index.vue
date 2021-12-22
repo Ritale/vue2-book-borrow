@@ -1,45 +1,82 @@
 <template>
-  <div class="item">
+  <div class="item" @click="toDetail(book)">
       <div class="poster">
           <!-- <img /> -->
           暂无图片
       </div>
       <div class="info">
-          <div class='book-title'>ES6标准入门（第3版）</div>
-          <div class="book-desc">剖析ES理解应用难题，横跨ES2015/2016/2017新标，抢占JavaScript制高点</div>
+          <div class='book-title'>{{book.title}}</div>
+          <div class="book-desc">{{book.desc}}</div>
           <div class='book-desc'>
-              <span>作者：阮一峰</span>
-              <span class="other">出版时间：2017-09-01</span>
+              <span>作者：{{book.author}}</span>
+              <span class="other">出版时间：{{book.publishTime}}</span>
           </div>
           <div class='book-desc'>
-                <span>图书数量：2</span>
-                <span class="other">可借数量：1</span>
+                <span>图书数量：{{book.total}}</span>
+                <span class="other">可借数量：{{surplus}}</span>
           </div>
       </div>
-      <div class="operation">
-          <el-button type="primary" @click="openBorrowDialog">借书</el-button>
+      <!-- <div class="operation">
+          <el-button type="primary" @click="openBorrowDialog(book)" :disabled="surplus === 0">借书</el-button>
           <el-button type="primary">还书</el-button>
-      </div>
-      <BorrowDialog isVisible="showBorrowDialog" title="借阅登记" />
+      </div> -->
+      <!-- <BorrowDialog :isVisible="showBorrowDialog" title="借阅登记" :data="book" /> -->
   </div>
 </template>
 
 <script>
-import BorrowDialog from '../BorrowDialog';
+// import BorrowDialog from '../BorrowDialog';
 
 export default {
     name: 'ListItem',
-    components: {BorrowDialog},
+    props: ['book'],
     data() {
         return {
             dialogTitle: '借书',
             showBorrowDialog: false
         }
     },
-    methods: {
-        openBorrowDialog() {
-            this.showBorrowDialog = true;
+    computed: {
+        surplus() {
+            if (!this.book.borrowedNo) {
+                return this.book.total;
+            }
+            return this.book.total - this.book.borrowedNo;
         }
+    },
+    methods: {
+        // openBorrowDialog() {
+        //     this.showBorrowDialog = true;
+        // },
+        // closeBorrowDialog() {
+        //     this.showBorrowDialog = false;
+        // },
+        // submitBorrow(value) {
+        //     const books = JSON.parse(localStorage.getItem('books')).map(item => {
+        //         if (item.id === this.book.id) {
+        //             return value;
+        //         }
+        //         return item;
+        //     });
+        //     localStorage.setItem('books', JSON.stringify(books));
+        //     this.closeBorrowDialog();
+        // },
+        toDetail(book) {
+            this.$router.push({
+                name: 'detail',
+                params: {
+                    id: book.id
+                }
+            })
+        }
+    },
+    mounted() {
+        this.$bus.$on('closeBorrowDialog', this.closeBorrowDialog);
+        this.$bus.$on('submitBorrow', this.submitBorrow)
+    },
+    beforeDestroy() {
+        this.$bus.$off('closeBorrowDialog');
+        this.$bus.$off('submitBorrow');
     }
 }
 </script>
@@ -66,8 +103,12 @@ export default {
         }
 
         .info {
+            display: flex;
+            flex-direction: column;
+            max-width: 528px;
             margin: 10px 24px;
             font-size: 14px;
+            flex: 2;
 
             .book-title {
                 font-size: 20px;
@@ -78,6 +119,8 @@ export default {
                 height: 20px;
                 line-height: 20px;
                 text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
                 color: #71777c;
 
                 .other {
@@ -92,7 +135,7 @@ export default {
 
         .operation {
             align-self: center;
-            margin-left: 60px;
+            margin-left: 10px;
         }
     }
 </style>

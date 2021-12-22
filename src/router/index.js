@@ -20,6 +20,7 @@ const router =  new VueRouter({
             component: BookList
         },
         {
+            name: 'detail',
             path: '/detail/:id',
             component: BookDetail
         },
